@@ -3,7 +3,8 @@ import {APIRouter} from "./src/backend/APIRouter";
 
 import * as express from "express";
 import * as passport from "passport";
-import {loginRouter} from "./src/backend/v1/Login";
+import {ensureAuthenticated} from "./src/backend/util";
+
 const bodyParser = require("body-parser");
 const path = require('path')
 const cookieParser = require("cookie-parser");
@@ -14,13 +15,13 @@ const GITHUB_CLIENT_ID = process.env.GITHUB_CLIENT_ID
 const GITHUB_CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET
 const GITHUB_CALLBACK_URL = "http://localhost:8000/api/v1/login/github/callback"
 
-function ensureAuthenticated(req, res, next) {
-    if (req.isAuthenticated()) {
-        return next()
+declare global {
+    namespace Express {
+        interface User {
+            [index: string]:any;
+        }
     }
-    res.redirect("/login")
 }
-
 
 passport.serializeUser(function(user, done) {
     done(null, user)
