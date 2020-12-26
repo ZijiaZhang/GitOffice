@@ -8,7 +8,10 @@ import {Home} from "./Home";
 import {RichTextEditor} from "./FileEditor/RichTextEditor";
 import {LatexEditor} from "./FileEditor/LatexEditor";
 import {Login} from "./Login";
-
+import {Editor} from "./Editor";
+import {Provider} from "react-redux";
+import {createStore} from "redux";
+import reducers from '../reducers';
 export const history = createBrowserHistory();
 
 class AppRouter extends Component {
@@ -21,12 +24,14 @@ class AppRouter extends Component {
 
     render() {
         return (
-            <Switch>
-                <Route exact path="/" component={Home}/>
-                <Route path="/login" component={Login}/>
-                <Route path="/RichText" component={RichTextEditor}/>
-                <Route path="/Latex" component={LatexEditor}/>
-            </Switch>
+            <Provider store={createStore(reducers)}>
+                <Switch>
+                    <Route exact path="/" component={Home}/>
+                    <Route path="/RichText" component={RichTextEditor}/>
+                    <Route path="/Latex" component={LatexEditor}/>
+                    <Route path="/:owner/:repo" component={Editor} />
+                </Switch>
+            </Provider>
         );
     }
 }

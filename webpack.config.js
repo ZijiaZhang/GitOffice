@@ -5,6 +5,7 @@ module.exports = {
     devtool: "source-map",
     entry: {
         main: './src/frontend/index.jsx',
+        notLoggedIn: './src/frontend/NotLoggedIn.jsx'
     },
     resolve: {
         extensions: [".jsx", ".js", ".mjs"]

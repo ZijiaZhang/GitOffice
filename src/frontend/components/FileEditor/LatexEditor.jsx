@@ -3,7 +3,7 @@ import React from  "react"
 import { parse, HtmlGenerator } from 'latex.js'
 import {Controlled as CodeMirror} from 'react-codemirror2'
 require('codemirror/mode/stex/stex');
-import css from "../../style.css";
+import css from "../../css/CodeMirror.css";
 
 export class LatexEditor extends FileEditor{
 
