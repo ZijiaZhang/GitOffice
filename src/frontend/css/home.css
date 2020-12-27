@@ -18,7 +18,9 @@
 }
 
 #item-list ul > li:hover {
-    background: #efefef;
+    background: #0092aa;
+    cursor: pointer;
+    color: white;
 }
 
 .button {

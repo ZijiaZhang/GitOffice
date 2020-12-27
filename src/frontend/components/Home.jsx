@@ -19,10 +19,10 @@ export class Home extends React.Component{
             <ul>
                 {this.state.repos.map((repo) =>
 
-                    <li key={`${repo.owner.login}/${repo.name}`}>
-                        <Link to={`/${repo.owner.login}/${repo.name}`}>
+                    <li key={`${repo.owner.login}/${repo.name}`} onClick={() => this.props.history.push(`/${repo.owner.login}/${repo.name}`)}>
+
                         <h2>{`${repo.owner.login}/${repo.name}`}</h2>
-                            <span>{repo.private? "Private": "Public"}</span></Link>
+                            <span>{repo.private? "Private": "Public"}</span>
                     </li>)}
             </ul>
             </div>
