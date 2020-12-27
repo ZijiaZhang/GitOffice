@@ -75,13 +75,25 @@ class NoAuthError{
     }
 }
 
+
+
 app.use((req, res, next) => {
     if (req.isAuthenticated()) {
         return next()
     }
     let error = new NoAuthError("Not Logged in");
     return next(error);
-    }, (req, res, next) => res.sendFile(path.join(__dirname, 'public', 'loggedin.html')))
+    });
+
+app.get('/logout', function(req, res){
+    req.logout();
+    res.redirect('/');
+});
+
+app.use((req, res, next) =>
+    res.sendFile(path.join(__dirname, 'public', 'loggedin.html')))
+
+
 
 app.use(errorHandeler)
 

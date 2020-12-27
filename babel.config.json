@@ -3,5 +3,8 @@
     "useBuiltIns": "usage",
     "corejs": 3,
     "targets": "> 0.25%, not dead"
-  }], "@babel/preset-react"]
+  }], "@babel/preset-react"],
+  "plugins": ["babel-plugin-react-scoped-css"
+
+  ]
 }

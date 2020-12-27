@@ -1,6 +1,7 @@
 import React from "react"
-import css from "../css/home.css";
+import "../css/home.css";
 import {Link} from "react-router-dom";
+import {NavigateBar} from "./NavigateBar";
 
 export class Home extends React.Component{
     constructor(props) {
@@ -13,6 +14,7 @@ export class Home extends React.Component{
 
     render(){
         return (<div>
+            <NavigateBar {... this.props} />
             <h2>You have Logged in {this.state.user? this.state.user.username: "Loading"}</h2>
             <h3>Your repos:</h3>
             <div id="item-list">

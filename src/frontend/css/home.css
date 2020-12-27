@@ -1,3 +1,7 @@
+*{margin:0}
+
+#header-wrap{ position:absolute;}
+
 #item-list ul {
     padding: 0;
     margin: 20px 0;

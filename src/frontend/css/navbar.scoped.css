@@ -1,0 +1,21 @@
+ul{
+    display: flex;
+    padding: 0;
+}
+
+li{
+    height: 100%;
+    list-style: none;
+    padding: 15px;
+}
+
+div{
+    background-color: #0092aa;
+    color: white;
+    position: sticky;
+}
+
+li:hover{
+    cursor: pointer;
+    background-color: aqua;
+}
