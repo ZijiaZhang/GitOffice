@@ -2,7 +2,7 @@ import React from "react"
 import {FileItem} from "./FileItem";
 import {connect} from "react-redux";
 
-import css from "../css/home.css";
+import css from "../css/fileExplorer.css";
 
 
 class FileExplorer_React extends React.Component{
@@ -14,6 +14,7 @@ class FileExplorer_React extends React.Component{
             treeInfo: null,
             error: null
         }
+        this.getInfo(this.props.user, this.props.repo, this.props.sha);
     }
     render() {
         if (this.state.error){
@@ -21,13 +22,13 @@ class FileExplorer_React extends React.Component{
                 {JSON.stringify(this.state.error)}
             </div>)
         }
-        if (this.state.repoInfo && this.state.branchInfo && this.state.treeInfo){
+        if (this.state.treeInfo){
             return (
-                <div id="item-list">
-                <p>Selected file {this.props.selected_file}</p>
+                <div className="item-list" >
                 <ul>
-                {this.state.treeInfo.tree.map((file)=> <FileItem key={file.sha} sha={file.sha} path={file.path} type={file.type}/>)}
-            </ul>
+                {this.state.treeInfo.tree.map((file)=>
+                    <FileItem {...this.props} key={file.sha} sha={file.sha} path={file.path} type={file.type}/>)}
+                </ul>
                 </div>)
         }
         return (
@@ -37,17 +38,17 @@ class FileExplorer_React extends React.Component{
         );
     }
 
-    componentDidMount() {
-        this.getInfo(this.props.user, this.props.repo);
-    }
-
-    async getInfo(user, repo) {
+    async getInfo(user, repo, sha) {
         try {
-            let repoInfo = await (await fetch(`/api/v1/github/repo/${user}/${repo}`)).json()
-            this.setState({repoInfo})
-            let branchInfo = await (await fetch(`/api/v1/github/repo/${user}/${repo}/${repoInfo.default_branch}`)).json()
-            this.setState({branchInfo})
-            let treeInfo = await (await fetch(`/api/v1/github/repo/${user}/${repo}/tree/${branchInfo.commit.commit.tree.sha}`)).json()
+            if (!sha){
+                let repoInfo = await (await fetch(`/api/v1/github/repo/${user}/${repo}`)).json()
+                this.setState({repoInfo})
+                let branchInfo = await (await fetch(`/api/v1/github/repo/${user}/${repo}/${repoInfo.default_branch}`)).json()
+                this.setState({branchInfo})
+                sha = branchInfo.commit.commit.tree.sha
+            }
+            console.log(sha);
+            let treeInfo = await (await fetch(`/api/v1/github/repo/${user}/${repo}/tree/${sha}`)).json()
             this.setState({treeInfo})
         } catch (e){
             this.setState({error: e})

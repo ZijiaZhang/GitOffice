@@ -1,8 +1,12 @@
 @import 'codemirror/lib/codemirror.css';
 @import 'codemirror/theme/material.css';
 
+.react-codemirror2{
+    width: 50%;
+}
+
 .CodeMirror{
-    width: 50vw;
+    width: 100%;
     height: 90vh;
     border: 2px #000000;
     border-style: solid;
@@ -11,4 +15,5 @@
 .latex-render{
     padding: 20px;
 }
+
 

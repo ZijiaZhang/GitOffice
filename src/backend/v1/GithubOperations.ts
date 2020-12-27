@@ -64,6 +64,17 @@ github_api_router.get('/repo/:owner/:name/tree/:sha', ensureAuthenticated, (asyn
     res.send(detail.data);
 }))
 
+
+github_api_router.get('/repo/:owner/:name/blob/:sha', ensureAuthenticated, (async (req, res, next) => {
+    let token = req.user.accessToken;
+    let gh = new GitHub({
+        token
+    });
+    let repo = gh.getRepo(req.params.owner, req.params.name);
+    let detail = await repo.getBlob(req.params.sha)
+    res.send(detail.data);
+}))
+
 github_api_router.post('/repo/:owner/:name/:branch', ensureAuthenticated, (async (req, res, next) => {
     let path = req.body.path;
     let content = req.body.content;

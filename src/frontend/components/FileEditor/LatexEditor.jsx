@@ -10,6 +10,7 @@ export class LatexEditor extends FileEditor{
 
     constructor(props) {
         super(props);
+        this.current_file = props.selected_file;
         this.state = {value: ""}
         this.displayArea = React.createRef()
         this.savedData = ''
@@ -21,8 +22,8 @@ export class LatexEditor extends FileEditor{
     }
 
     render() {
-        return (<div><button onClick={() => this.save()}> Save</button>
-            <div style={{display: "flex"}}>
+        return (<div className="fileEditorWrapper"><button onClick={() => this.save()}> Save</button>
+            <div style={{display: "flex", width: "100%"}}>
                 <CodeMirror value={this.state.value} options={{mode:"stex",lineWrapping: true,
                     lineNumbers: true}} onBeforeChange={(editor, data, value) => {
                     this.setState({value});
@@ -42,11 +43,33 @@ export class LatexEditor extends FileEditor{
     }
 
     compileLatex(v) {
-        let generator = new HtmlGenerator()
-        let doc = parse(v, {generator})
-        this.displayArea.current.innerHTML = '';
-        this.displayArea.current.appendChild(generator.stylesAndScripts("https://cdn.jsdelivr.net/npm/latex.js@0.12.4/dist/"))
-        this.displayArea.current.appendChild(doc.domFragment())
-        return v
+        try {
+            let generator = new HtmlGenerator()
+            let doc = parse(v, {generator})
+            this.displayArea.current.innerHTML = '';
+            this.displayArea.current.appendChild(generator.stylesAndScripts("https://cdn.jsdelivr.net/npm/latex.js@0.12.4/dist/"))
+            this.displayArea.current.appendChild(doc.domFragment())
+            return v
+        } catch (e) {
+            this.displayArea.current.innerHTML = '<p> Error Compiling  Latex</p>';
+            return v
+        }
     }
+
+    componentDidMount() {
+        this.load_file(this.props.selected_file)
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if(this.props.selected_file !== prevProps.selected_file) {
+
+            this.load_file(this.props.selected_file);
+        }
+    }
+
+    async load_file(file_sha) {
+        let file_content = await (await fetch(`/api/v1/github/repo/${this.props.user}/${this.props.repo}/blob/${file_sha}`)).text()
+        this.setState({value: file_content});
+    }
+
 }

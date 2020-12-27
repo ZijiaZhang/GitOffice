@@ -1,0 +1,19 @@
+.editorWrapper{
+    display: flex;
+}
+
+.explorerWrapper{
+    width: 20%;
+}
+
+.fileEditorWrapper{
+    width: 80%;
+}
+
+.react-codemirror2{
+    width: 50%;
+}
+
+.latex-render{
+    width: 50%;
+}

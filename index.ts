@@ -87,7 +87,9 @@ app.use(errorHandeler)
 
 function errorHandeler(err: any, req: Request, res: Response, next: NextFunction){
     if (err instanceof NoAuthError) {
-        console.log("No Auth")
+        if(req.path !== '/' && req.path !== '/login' ){
+            return res.redirect('/')
+        }
         return res.status(200).sendFile(path.join(__dirname, 'public', 'notloggedin.html'))
     }
     res.status(500).json(err);
