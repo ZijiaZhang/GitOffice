@@ -51,7 +51,10 @@ export class LatexEditor extends FileEditor{
             this.displayArea.current.appendChild(doc.domFragment())
             return v
         } catch (e) {
-            this.displayArea.current.innerHTML = '<p> Error Compiling  Latex</p>';
+            this.displayArea.current.innerHTML = ''
+            let elem = document.createElement('p')
+            elem.innerHTML = JSON.stringify(e)
+            this.displayArea.current.appendChild(elem);
             return v
         }
     }
@@ -68,6 +71,8 @@ export class LatexEditor extends FileEditor{
     }
 
     async load_file(file_sha) {
+        if(!file_sha)
+            return;
         let file_content = await (await fetch(`/api/v1/github/repo/${this.props.user}/${this.props.repo}/blob/${file_sha}`)).text()
         this.setState({value: file_content});
     }
