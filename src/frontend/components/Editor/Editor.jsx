@@ -5,6 +5,7 @@ import {connect} from "react-redux";
 
 import css from '../../css/editor.css'
 import {NavigateBar} from "../NavigateBar";
+import {LatexEditorTexLive} from "./FileEditor/LatexEditorTexLive";
 
 class Editor_React extends React.Component{
     constructor(props) {
@@ -17,7 +18,7 @@ class Editor_React extends React.Component{
             <div className="explorerWrapper">
                 <FileExplorer user={this.props.match.params.owner} repo={this.props.match.params.repo}/>
             </div>
-            <LatexEditor selected_file={this.props.selected_file} user={this.props.match.params.owner} repo={this.props.match.params.repo}/>
+            <LatexEditorTexLive selected_file={this.props.selected_file} user={this.props.match.params.owner} repo={this.props.match.params.repo}/>
         </div></div>)
     }
 }
