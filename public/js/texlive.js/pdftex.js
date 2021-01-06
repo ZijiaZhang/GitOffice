@@ -124,21 +124,21 @@ var PDFTeX = function(opt_workerPath) {
     }
   }
 
-  self.compile = function(source_code) {
+  self.compile = function(source_code, aux, toc) {
     var p = new promise.Promise();
 
-    self.compileRaw(source_code).then(function(binary_pdf) {
+    self.compileRaw(source_code, aux, toc).then(function(binary_pdf, aux, toc) {
       if(binary_pdf === false)
         return p.done(false);
 
       pdf_dataurl = 'data:application/pdf;charset=binary;base64,' + window.btoa(binary_pdf);
 
-      return p.done(pdf_dataurl);
+      return p.done(pdf_dataurl, aux, toc);
     });
     return p;
   }
 
-  self.compileRaw = function(source_code) {
+  self.compileRaw = function(source_code, aux, toc) {
     if(typeof(chunkSize) === "undefined")
       chunkSize = determineChunkSize();
 
@@ -164,8 +164,34 @@ var PDFTeX = function(opt_workerPath) {
 
     var getPDF = function() {
       console.log(arguments);
-      return self.FS_readFile('/input.pdf');
+      var p = new promise.Promise();
+
+      self.FS_readFile('/input.pdf').then(
+          (pdf) => {
+            return self.FS_readFile("/input.aux").then((aux) =>
+              {
+                return self.FS_readFile("/input.toc").then((toc) =>
+                    {
+                      return p.done(pdf, aux, toc)
+                    }
+                )
+              }
+            )
+          }
+      )
+      return p;
     }
+
+    if (aux){
+      console.log("AUX found")
+      commands.push(curry(self, 'FS_createDataFile', ['/', 'input.aux', aux, true, true]))
+    }
+
+    if(toc){
+      console.log("toc found")
+      commands.push(curry(self, 'FS_createDataFile', ['/', 'input.toc', toc, true, true]))
+    }
+
 
     return promise.chain(commands)
       .then(sendCompile)

@@ -3,6 +3,7 @@ import {FileItem} from "./FileItem";
 import {connect} from "react-redux";
 
 import css from "../../css/fileExplorer.css";
+import {update_repo_info} from "../../actions";
 
 
 class FileExplorer_React extends React.Component{
@@ -43,6 +44,7 @@ class FileExplorer_React extends React.Component{
             if (!sha){
                 let repoInfo = await (await fetch(`/api/v1/github/repo/${user}/${repo}`)).json()
                 this.setState({repoInfo})
+                this.props.update_repo_info(repoInfo)
                 let branchInfo = await (await fetch(`/api/v1/github/repo/${user}/${repo}/${repoInfo.default_branch}`)).json()
                 this.setState({branchInfo})
                 sha = branchInfo.commit.commit.tree.sha
@@ -61,4 +63,4 @@ const mapStateToProps = (state) => {
     return {selected_file: state.selected_file}
 };
 
-export const FileExplorer = connect(mapStateToProps, {})(FileExplorer_React);
+export const FileExplorer = connect(mapStateToProps, {update_repo_info: update_repo_info})(FileExplorer_React);

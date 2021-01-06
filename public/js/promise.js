@@ -29,6 +29,7 @@
         this.result = arguments;
         this._isdone = true;
         for (var i = 0; i < this._callbacks.length; i++) {
+            console.log(arguments)
             this._callbacks[i].apply(null, arguments);
         }
         this._callbacks = [];

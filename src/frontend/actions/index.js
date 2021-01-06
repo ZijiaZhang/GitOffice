@@ -4,3 +4,10 @@ export const select_file = (sha) => {
         sha: sha,
     };
 };
+
+export const update_repo_info = (repo_info) => {
+    return {
+        type: 'update_repo_info',
+        repo_info: repo_info,
+    };
+};

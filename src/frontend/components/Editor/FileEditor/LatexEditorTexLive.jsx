@@ -3,16 +3,19 @@ import React from  "react"
 import { parse, HtmlGenerator } from 'latex.js'
 import {Controlled as CodeMirror} from 'react-codemirror2'
 require('codemirror/mode/stex/stex');
+import {connect} from "react-redux";
+
 import "../../../css/CodeMirror.css";
 import {TexLive} from "../../LatexCompiler/TexLive";
 
-export class LatexEditorTexLive extends FileEditor{
+class LatexEditorTexLive_React extends FileEditor{
 
     constructor(props) {
         super(props);
         this.current_file = props.selected_file;
         this.state = {value: ""}
         this.displayArea = React.createRef()
+        this.texLive = new TexLive()
         this.savedData = ''
         window.onbeforeunload = () => {
             if (this.savedData !== this.state.value) {
@@ -35,25 +38,23 @@ export class LatexEditorTexLive extends FileEditor{
         )
     }
 
-    save(){
-        this.savedData = this.state.value;
+    async save(){
+        if(this.state.repo_info) {
+            let data = await (await fetch(`/api/v1/github/repo/${this.props.user}/${this.props.repo}/${this.state.repo_info.default_branch}`)).json();
+            console.log(data);
+            this.savedData = this.state.value;
+        } else {
+            window.alert("No repo Specified");
+        }
+
     }
     load(data) {
         this.setState({value: data});
     }
 
     compileLatex(v) {
-        // try {
-            let texLive = new TexLive()
-            texLive.render(this.state.value, this.displayArea.current)
-            return v
-        // } catch (e) {
-        //     this.displayArea.current.innerHTML = ''
-        //     let elem = document.createElement('p')
-        //     elem.innerHTML = JSON.stringify(e)
-        //     this.displayArea.current.appendChild(elem);
-        //     return v
-        // }
+        this.texLive.render(this.state.value, this.displayArea.current)
+        return v
     }
 
     componentDidMount() {
@@ -73,5 +74,10 @@ export class LatexEditorTexLive extends FileEditor{
         let file_content = await (await fetch(`/api/v1/github/repo/${this.props.user}/${this.props.repo}/blob/${file_sha}`)).text()
         this.setState({value: file_content});
     }
-
 }
+
+const mapStateToProps = (state) => {
+    return {repo_info: state.repo_info}
+};
+
+export const LatexEditorTexLive = connect(mapStateToProps, {})(LatexEditorTexLive_React);
