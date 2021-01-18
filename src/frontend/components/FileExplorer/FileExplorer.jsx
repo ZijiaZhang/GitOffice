@@ -28,7 +28,7 @@ class FileExplorer_React extends React.Component{
                 <div className="item-list" >
                 <ul>
                 {this.state.treeInfo.tree.map((file)=>
-                    <FileItem {...this.props} key={file.sha} sha={file.sha} path={file.path} type={file.type}/>)}
+                    <FileItem {...this.props} key={file.sha} sha={file.sha} path={file.path} type={file.type} parent_path={this.props.path}/>)}
                 </ul>
                 </div>)
         }

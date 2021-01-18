@@ -1,6 +1,7 @@
 import * as express from "express"
 import {ensureAuthenticated} from "../util";
 var GitHub = require('github-api');
+const fetch = require("node-fetch");
 
 export const github_api_router = express.Router()
 
@@ -73,17 +74,35 @@ github_api_router.get('/repo/:owner/:name/blob/:sha', ensureAuthenticated, (asyn
     let repo = gh.getRepo(req.params.owner, req.params.name);
     let detail = await repo.getBlob(req.params.sha)
     res.send(detail.data);
-}))
+}));
 
-github_api_router.post('/repo/:owner/:name/:branch', ensureAuthenticated, (async (req, res, next) => {
-    let path = req.body.path;
-    let content = req.body.content;
-    let message = req.body.message;
+github_api_router.get('/repo/:owner/:name/contents/:path', ensureAuthenticated, (async (req, res, next) => {
     let token = req.user.accessToken;
     let gh = new GitHub({
         token
     });
     let repo = gh.getRepo(req.params.owner, req.params.name);
-    let result = await repo.writeFile(req.params.branch, path, content, message)
-    res.send(result.data);
+    let detail = await repo.getContents(null, req.params.path, true);
+    res.send(detail.data);
+}))
+
+github_api_router.post('/repo/:owner/:name/:branch/:path', ensureAuthenticated, (async (req, res, next) => {
+    let content = req.body.content;
+    let message = req.body.message;
+    let sha = req.body.sha;
+    let token = req.user.accessToken;
+    let gh = new GitHub({
+        token
+    });
+    let repo = gh.getRepo(req.params.owner, req.params.name);
+    let url = `https://api.github.com/repos/${req.params.owner}/${req.params.name}/contents/${req.params.path}`;
+    console.log(url);
+    console.log(req.body);
+    let result = await fetch(url, {
+        body: JSON.stringify(req.body), method: 'PUT'
+    });
+    let t = await result.json();
+    console.log(t);
+    // let result = await repo.writeFile(req.params.branch, req.params.path, content, message, {sha: sha})
+    res.send(result);
 }))

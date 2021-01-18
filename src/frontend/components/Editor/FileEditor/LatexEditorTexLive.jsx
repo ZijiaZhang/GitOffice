@@ -13,6 +13,7 @@ class LatexEditorTexLive_React extends FileEditor{
     constructor(props) {
         super(props);
         this.current_file = props.selected_file;
+        console.log(this.current_file);
         this.state = {value: ""}
         this.displayArea = React.createRef()
         this.texLive = new TexLive()
@@ -39,8 +40,14 @@ class LatexEditorTexLive_React extends FileEditor{
     }
 
     async save(){
-        if(this.state.repo_info) {
-            let data = await (await fetch(`/api/v1/github/repo/${this.props.user}/${this.props.repo}/${this.state.repo_info.default_branch}`)).json();
+        if(this.props.repo_info) {
+            let data = await (await fetch(`/api/v1/github/repo/${this.props.user}/${this.props.repo}/${this.props.repo_info.default_branch}/${this.props.selected_file.path}`, {
+                body: JSON.stringify({
+                    content: this.state.value,
+                    message: "Edit on GitOffice",
+                    sha: this.props.selected_file.sha
+                }), method: "POST"
+            })).json();
             console.log(data);
             this.savedData = this.state.value;
         } else {
@@ -58,26 +65,33 @@ class LatexEditorTexLive_React extends FileEditor{
     }
 
     componentDidMount() {
-        this.load_file(this.props.selected_file)
+        this.load_file_via_path(this.props.selected_file.path)
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if(this.props.selected_file !== prevProps.selected_file) {
+        if(this.props.selected_file.path !== prevProps.selected_file.path) {
 
-            this.load_file(this.props.selected_file);
+            this.load_file_via_path(this.props.selected_file.path);
         }
     }
 
-    async load_file(file_sha) {
-        if(!file_sha)
+    // async load_file(file_sha) {
+    //     if(!file_sha)
+    //         return;
+    //     let file_content = await (await fetch(`/api/v1/github/repo/${this.props.user}/${this.props.repo}/blob/${file_sha}`)).text()
+    //     this.setState({value: file_content});
+    // }
+
+    async load_file_via_path(file_path) {
+        if(!file_path)
             return;
-        let file_content = await (await fetch(`/api/v1/github/repo/${this.props.user}/${this.props.repo}/blob/${file_sha}`)).text()
+        let file_content = await (await fetch(`/api/v1/github/repo/${this.props.user}/${this.props.repo}/contents/${file_path}`)).text()
         this.setState({value: file_content});
     }
 }
 
 const mapStateToProps = (state) => {
-    return {repo_info: state.repo_info}
+    return {repo_info: state.repo_info, selected_file: state.selected_file}
 };
 
 export const LatexEditorTexLive = connect(mapStateToProps, {})(LatexEditorTexLive_React);

@@ -14,7 +14,7 @@ export class FileItem_React extends React.Component{
 
     render() {
         if (this.props.type === 'blob'){
-            return (<li onClick={() => this.props.select_file(this.props.sha)}>
+            return (<li onClick={() => this.props.select_file({sha: this.props.sha, path: this.props.parent_path + this.props.path})}>
                 {this.props.path}
             </li>)
         } else if (this.props.type === 'tree'){
@@ -24,7 +24,7 @@ export class FileItem_React extends React.Component{
                 </div>
                     {this.state.collapse? <div/> : <div style={{display: "flex"}}>
                     <div style={{width: "20px"}}/>
-                        <FileExplorer style={this.state.collapse ? {display: "none"}: {}} user={this.props.user} repo={this.props.repo} sha={this.props.sha}/>
+                        <FileExplorer style={this.state.collapse ? {display: "none"}: {}} user={this.props.user} repo={this.props.repo} sha={this.props.sha} path={this.props.parent_path + this.props.path + '/'}/>
                 </div>}
 
             </li>

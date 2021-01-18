@@ -1,10 +1,11 @@
 import {combineReducers} from "redux";
 
-const selectfile = (file_sha = '', action) => {
+const selectfile = (file_info = {}, action) => {
     if (action.type === 'select_file') {
-        return action.sha;
+        console.log(action);
+        return {sha : action.sha, path: action.path};
     }
-    return file_sha;
+    return file_info;
 };
 
 const update_repo_info = (repo_info = {}, action) => {

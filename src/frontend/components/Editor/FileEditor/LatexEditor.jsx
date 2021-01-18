@@ -60,13 +60,13 @@ export class LatexEditor extends FileEditor{
     }
 
     componentDidMount() {
-        this.load_file(this.props.selected_file)
+        this.load_file(this.props.selected_file.sha)
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if(this.props.selected_file !== prevProps.selected_file) {
+        if(this.props.selected_file.sha !== prevProps.selected_file.sha) {
 
-            this.load_file(this.props.selected_file);
+            this.load_file(this.props.selected_file.sha);
         }
     }
 

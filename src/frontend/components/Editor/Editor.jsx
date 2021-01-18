@@ -16,7 +16,7 @@ class Editor_React extends React.Component{
         return (<div><NavigateBar {... this.props} />
         <div className="editorWrapper">
             <div className="explorerWrapper">
-                <FileExplorer user={this.props.match.params.owner} repo={this.props.match.params.repo}/>
+                <FileExplorer user={this.props.match.params.owner} repo={this.props.match.params.repo} path={''}/>
             </div>
             <LatexEditorTexLive selected_file={this.props.selected_file} user={this.props.match.params.owner} repo={this.props.match.params.repo}/>
         </div></div>)
