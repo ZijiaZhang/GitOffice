@@ -99,7 +99,7 @@ github_api_router.post('/repo/:owner/:name/:branch/:path', ensureAuthenticated, 
     console.log(url);
     console.log(req.body);
     let result = await fetch(url, {
-        body: JSON.stringify(req.body), method: 'PUT'
+        body: JSON.stringify(req.body), headers: {Authorization: "token " + token}, method: 'PUT'
     });
     let t = await result.json();
     console.log(t);

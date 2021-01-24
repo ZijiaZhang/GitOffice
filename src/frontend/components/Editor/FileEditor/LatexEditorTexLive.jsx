@@ -43,10 +43,10 @@ class LatexEditorTexLive_React extends FileEditor{
         if(this.props.repo_info) {
             let data = await (await fetch(`/api/v1/github/repo/${this.props.user}/${this.props.repo}/${this.props.repo_info.default_branch}/${this.props.selected_file.path}`, {
                 body: JSON.stringify({
-                    content: this.state.value,
+                    content: btoa(this.state.value),
                     message: "Edit on GitOffice",
                     sha: this.props.selected_file.sha
-                }), method: "POST"
+                }), headers: {'Content-Type': 'application/json'},mode: 'cors', method: "POST"
             })).json();
             console.log(data);
             this.savedData = this.state.value;
